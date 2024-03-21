@@ -32,22 +32,22 @@ runs:
   using: composite
   steps:
     - name: Checkout a new or existing branch
-        id: checkout-branch
-        run: |
-          existing_branch=$(gh pr list --author "$PR_AUTHOR" --state open --json title,headRefName -q 'first(.[] | select(.title == "$PR_TITLE") | .headRefName)')
-          if [[ -n "$existing_branch" ]]; then
-            git fetch origin $existing_branch
-            git checkout $existing_branch
-            git reset --hard main
-            echo "BRANCH_NAME=$existing_branch" >> "$GITHUB_OUTPUT"
-            echo "PR_EXISTS=1" >> "$GITHUB_OUTPUT"
-          else
-            new_branch="$INPUTS_BRANCH_NAME"
-            git checkout -b $new_branch
-            echo "BRANCH_NAME=$new_branch" >> "$GITHUB_OUTPUT"
-          fi
-        env:
-          INPUTS_BRANCH_NAME: ${{ inputs.branch-name }}
-          GITHUB_TOKEN: ${{ inputs.github-token }}
-          PR_AUTHOR: ${{ inputs.pr-author }}
-          PR_TITLE: ${{ inputs.pr-title }}
+      id: checkout-branch
+      run: |
+        existing_branch=$(gh pr list --author "$PR_AUTHOR" --state open --json title,headRefName -q 'first(.[] | select(.title == "$PR_TITLE") | .headRefName)')
+        if [[ -n "$existing_branch" ]]; then
+          git fetch origin $existing_branch
+          git checkout $existing_branch
+          git reset --hard main
+          echo "BRANCH_NAME=$existing_branch" >> "$GITHUB_OUTPUT"
+          echo "PR_EXISTS=1" >> "$GITHUB_OUTPUT"
+        else
+          new_branch="$INPUTS_BRANCH_NAME"
+          git checkout -b $new_branch
+          echo "BRANCH_NAME=$new_branch" >> "$GITHUB_OUTPUT"
+        fi
+      env:
+        INPUTS_BRANCH_NAME: ${{ inputs.branch-name }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        PR_AUTHOR: ${{ inputs.pr-author }}
+        PR_TITLE: ${{ inputs.pr-title }}
