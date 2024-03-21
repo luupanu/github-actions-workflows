@@ -23,10 +23,10 @@ inputs:
 outputs:
   branch-name:
     description: Return either an existing branch name (from the first open PR that was found) or the given branch name from inputs
-    value: ${{ steps.checkout-branch.outputs.PR_EXISTS }}
+    value: ${{ steps.checkout-branch.outputs.branch-name }}
   pr-exists:
     description: Sets a flag if a PR by an author with the title already existed
-    value: ${{ steps.checkout-branch.outputs.PR_EXISTS }}
+    value: ${{ steps.checkout-branch.outputs.pr-exists }}
 
 runs:
   using: composite
