@@ -7,25 +7,25 @@ permissions:
   pull-requests: write
 
 inputs:
-  BRANCH_NAME:
+  branch-name:
     description: Branch name to set if an existing PR was not found
     required: true
-  GITHUB_TOKEN:
+  github-token:
     description: A github private access token with permissions to write, usually GITHUB_TOKEN
     required: true
-  PR_AUTHOR:
+  pr-author:
     description: Author of PRs to search for (e.g. "github-actions[bot]")
     required: true
-  PR_TITLE:
+  pr-title:
     description: Title of PRs to search for (e.g. "My custom action")
     required: true
 
 outputs:
-  PR_EXISTS:
-    description: Sets a flag if a PR by an author with the title already existed
-    value: ${{ steps.checkout-branch.outputs.PR_EXISTS }}
-  BRANCH_NAME:
+  branch-name:
     description: Return either an existing branch name (from the first open PR that was found) or the given branch name from inputs
+    value: ${{ steps.checkout-branch.outputs.PR_EXISTS }}
+  pr-exists:
+    description: Sets a flag if a PR by an author with the title already existed
     value: ${{ steps.checkout-branch.outputs.PR_EXISTS }}
 
 runs:
@@ -47,7 +47,7 @@ runs:
             echo "BRANCH_NAME=$new_branch" >> "$GITHUB_OUTPUT"
           fi
         env:
-          INPUTS_BRANCH_NAME: ${{ inputs.BRANCH_NAME }}
-          GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-          PR_AUTHOR: ${{ inputs.PR_AUTHOR }}
-          PR_TITLE: ${{ inputs.PR_TITLE }}
+          INPUTS_BRANCH_NAME: ${{ inputs.branch-name }}
+          GITHUB_TOKEN: ${{ inputs.github-token }}
+          PR_AUTHOR: ${{ inputs.pr-author }}
+          PR_TITLE: ${{ inputs.pr-title }}
