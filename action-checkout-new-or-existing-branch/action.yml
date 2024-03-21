@@ -33,6 +33,7 @@ runs:
   steps:
     - name: Checkout a new or existing branch
       id: checkout-branch
+      shell: bash
       run: |
         existing_branch=$(gh pr list --author "$PR_AUTHOR" --state open --json title,headRefName -q 'first(.[] | select(.title == "$PR_TITLE") | .headRefName)')
         if [[ -n "$existing_branch" ]]; then
