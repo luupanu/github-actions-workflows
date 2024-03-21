@@ -37,9 +37,9 @@ runs:
       run: |
         existing_branch=$(gh pr list --author "$PR_AUTHOR" --state open --json title,headRefName -q "first(.[] | select(.title == \"$PR_TITLE\") | .headRefName)")
         if [[ -n "$existing_branch" ]]; then
-          git fetch origin $existing_branch
+          git fetch origin $existing_branch main
           git checkout $existing_branch
-          git reset --hard origin/main
+          git reset --hard main
           echo "branch-name=$existing_branch" >> "$GITHUB_OUTPUT"
           echo "pr-exists=1" >> "$GITHUB_OUTPUT"
         else
