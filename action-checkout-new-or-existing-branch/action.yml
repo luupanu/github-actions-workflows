@@ -35,7 +35,7 @@ runs:
       id: checkout-branch
       shell: bash
       run: |
-        existing_branch=$(gh pr list --author "$PR_AUTHOR" --state open --json title,headRefName -q "first(.[] | select(.title == \"$PR_TITLE\") | .headRefName)"")
+        existing_branch=$(gh pr list --author "$PR_AUTHOR" --state open --json title,headRefName -q "first(.[] | select(.title == \"$PR_TITLE\") | .headRefName)")
         if [[ -n "$existing_branch" ]]; then
           git fetch origin $existing_branch
           git checkout $existing_branch
