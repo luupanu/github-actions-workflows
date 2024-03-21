@@ -1,0 +1,53 @@
+name: Checkout a new or existing branch
+description: Useful for making sure an action re-uses an existing open PR if an open PR by some author (e.g. some bot) already exists
+
+permissions:
+  contents: write
+  packages: read
+  pull-requests: write
+
+inputs:
+  BRANCH_NAME:
+    description: Branch name to set if an existing PR was not found
+    required: true
+  GITHUB_TOKEN:
+    description: A github private access token with permissions to write, usually GITHUB_TOKEN
+    required: true
+  PR_AUTHOR:
+    description: Author of PRs to search for (e.g. "github-actions[bot]")
+    required: true
+  PR_TITLE:
+    description: Title of PRs to search for (e.g. "My custom action")
+    required: true
+
+outputs:
+  PR_EXISTS:
+    description: Sets a flag if a PR by an author with the title already existed
+    value: ${{ steps.checkout-branch.outputs.PR_EXISTS }}
+  BRANCH_NAME:
+    description: Return either an existing branch name (from the first open PR that was found) or the given branch name from inputs
+    value: ${{ steps.checkout-branch.outputs.PR_EXISTS }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout a new or existing branch
+        id: checkout-branch
+        run: |
+          existing_branch=$(gh pr list --author "$PR_AUTHOR" --state open --json title,headRefName -q 'first(.[] | select(.title == "$PR_TITLE") | .headRefName)')
+          if [[ -n "$existing_branch" ]]; then
+            git fetch origin $existing_branch
+            git checkout $existing_branch
+            git reset --hard main
+            echo "BRANCH_NAME=$existing_branch" >> "$GITHUB_OUTPUT"
+            echo "PR_EXISTS=1" >> "$GITHUB_OUTPUT"
+          else
+            new_branch="$INPUTS_BRANCH_NAME"
+            git checkout -b $new_branch
+            echo "BRANCH_NAME=$new_branch" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          INPUTS_BRANCH_NAME: ${{ inputs.BRANCH_NAME }}
+          GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+          PR_AUTHOR: ${{ inputs.PR_AUTHOR }}
+          PR_TITLE: ${{ inputs.PR_TITLE }}
